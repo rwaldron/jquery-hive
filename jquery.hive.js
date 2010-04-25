@@ -153,6 +153,8 @@
             return _threads;
           };
           _wrapCreated();
+          
+          jQuery.Hive.created = _wrapCreated;
         }
         //  Allows assignment to var
         return _threads;
@@ -199,7 +201,6 @@
         //  if message is not an object (string || array)
         //  normalize it into an object
         if ( typeof message == 'string' || jQuery.isArray(message) ) {
-        //if ( !jQuery.isPlainObject(message) || !message.message ) {
           _msg  = {
             "message" : message
           };
@@ -246,5 +247,3 @@
   };
 
 })(jQuery); 
-
-
