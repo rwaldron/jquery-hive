@@ -3,7 +3,7 @@
 *   http://github.com/rwldrn
 *   http://pollenjs.com
 *   MIT License
-*   version: 0.1.90
+*   version: 0.1.91
 */
 (function (jQuery) {
   /** 
@@ -27,19 +27,18 @@
       worker.addEventListener('message', function (event) { 
         var fn    = callback, response = JSON.parse(event.data);
 
-        //  Handle routing of direct messages
-        if ( response.SEND_TO && response.SEND_FROM ) {
 
+        if ( response.SEND_TO ) {
+        
           _msg  = {
             "message"    : response.message,
             "SEND_TO"    : +response.SEND_TO,  
             "SEND_FROM"  : +response.SEND_FROM
           };
-
+          
           jQuery.Hive.get(response.SEND_TO).send(_msg);
 
-          //  In direct message condition, return immediately to bypass 
-          //  the worker's receive message callback
+          //  If direct message return immediately, do not fire receive callback
           return true;
         }
         

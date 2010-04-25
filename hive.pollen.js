@@ -3,10 +3,10 @@
 *   http://github.com/rwldrn
 *   http://pollenjs.com
 *   MIT License
-*   version: 0.1.90
+*   version: 0.1.91
 *   (see source for other credits)
 */
-//  https://developer.mozilla.org/En/Core_JavaScript_1.5_Reference/Objects/Array/ForEach
+//  MDC forEach implementation
 if ( !Array.prototype.forEach ) {
   Array.prototype.forEach = function (fn) {
     var len = this.length || 0, i = 0, thisp = arguments[1];
@@ -42,7 +42,6 @@ if ( !Array.prototype.forEach ) {
   Pollen.prototype = {
     
     identity: 0,
-    version: '0.1.95',
     
     identify: {
       identify: function () {
@@ -958,8 +957,7 @@ if ( !Array.prototype.forEach ) {
           };
         }
         
-        if ( message.direct ) {
-          _msg.SEND_TO   = message.direct;
+        if ( message.SEND_TO ) {
           _msg.SEND_FROM = Pollen.identity;
         }
         
