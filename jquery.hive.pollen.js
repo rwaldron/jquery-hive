@@ -97,9 +97,8 @@ if ( !Array.prototype.forEach ) {
       /** 
        *  $.isObj( arg ) -> Boolean, object was created with {} or new Object()
        **/    
+      //  Adapted From jQuery.isPlainObject() -- Replaces Pollen.isObjLiteral()
       isObj: function( arg ) {
-        //  Adapted From jQuery.isPlainObject() -- Replaces Pollen.isObjLiteral()
-        
         if ( !arg ) {
           return false;
         }
@@ -116,6 +115,17 @@ if ( !Array.prototype.forEach ) {
 
         return key === undefined || hasOwn.call( arg, key );
       },
+      /** 
+       *  $.isEmptyObj( arg ) -> Boolean, Empty Object
+       **/
+      //  Adapted from jQuery.isEmptyObject() 
+      isEmptyObj: function ( arg ) { 
+        
+        for (var prop in arg) { 
+          return false; 
+        } 
+        return true; 
+      },      
       /** 
        *  $.isArr( arg ) -> Boolean, Array
        **/    
