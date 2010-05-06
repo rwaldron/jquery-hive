@@ -15,3 +15,9 @@
 * Query JSON with JSONPath
 * Variable evaluation and logic control flow utilities
 * A syntax that jQuery developers will understand
+
+
+
+# jQuery.Hive.js API: http://dev.pollenjs.com/hive/jquery.hive.php
+
+# jQuery.Hive.Pollen.js API: http://dev.pollenjs.com/hive/jquery.hive.pollen.php
