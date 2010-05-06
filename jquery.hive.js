@@ -1,10 +1,15 @@
-/**   
-*   jQuery.Hive.js 2009 Rick Waldron
-*   http://github.com/rwldrn
-*   http://pollenjs.com
-*   MIT License
-*   version: 0.1.91
-*/
+/*!
+ * jQuery.Hive Plugin
+ *  http://github.com/rwldrn
+ *  http://pollenjs.com
+ *
+ *  Copyright 2010, Rick Waldron
+ *  Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ *  v0.1.95
+ *  (see source for other credits)
+ */
+
 (function (jQuery) {
   /** 
    * jQuery.Hive  -> The Hive is a property of jQuery
