@@ -18,6 +18,7 @@
 
 
 
-# jQuery.Hive.js API: (http://dev.pollenjs.com/hive/jquery.hive.php)
+### [jQuery.Hive.js API](http://dev.pollenjs.com/hive/jquery.hive.php)
 
-# jQuery.Hive.Pollen.js API: (http://dev.pollenjs.com/hive/jquery.hive.pollen.php)
+### [jQuery.Hive.Pollen.js API](http://dev.pollenjs.com/hive/jquery.hive.pollen.php)
+
