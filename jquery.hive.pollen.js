@@ -977,6 +977,8 @@ if ( !Array.prototype.forEach ) {
       /** 
        *  $.receive( function ) -> Worker, execute [function] when worker receives a message from the client
        *  --> first argument is message object
+       *  --> 'this' is WorkerGlobalScope
+       *  --> can be shortened to $(function (message) { } );
        **/       
       receive:   function (fn) {
         //  Worker receives message, behaviour is similar to $().ready()
@@ -988,7 +990,7 @@ if ( !Array.prototype.forEach ) {
             Pollen.identity = message.WORKER_ID;
           }
 
-          return fn.call(event, message);
+          return fn.call(worker, message, event);
 
         }, false);      
       }
