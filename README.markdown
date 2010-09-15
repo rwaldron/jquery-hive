@@ -45,6 +45,10 @@ Assumes >= jQuery 1.4  and jQuery.Hive.js are loaded
             Update a browser based IM client
 
             Update a feed reader app ( 1-to-1 worker to feed?)
+            
+            Handle audio data from typed array
+            
+            Handle pixel array
           ------------------------------------------------------        
           */
 
