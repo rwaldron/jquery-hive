@@ -21,7 +21,9 @@
 
 
 # Basic Client Setup
-# (assumes jquery-1.4.2.js and jquery.hive.js are loaded)
+
+Assumes >= jQuery 1.4  and jQuery.Hive.js are loaded
+
 
     $(function () {
 
