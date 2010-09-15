@@ -1,16 +1,12 @@
-/*!
- * jQuery.Hive.Pollen JavaScript Library
- *  http://github.com/rwldrn
- *  http://pollenjs.com
- *
- *  Copyright 2010, Rick Waldron
- *  Dual licensed under the MIT or GPL Version 2 licenses.
- *
- *  v0.1.95
- *  (see source for other credits)
- */
-
-//  MDC forEach implementation
+/**   
+*   jQuery.Hive.Pollen/PollenJS/Pollen.JS 2009 Rick Waldron
+*   http://github.com/rwldrn
+*   http://pollenjs.com
+*   MIT License
+*   version: 0.1.91
+*   (see source for other credits)
+*/
+//  ES5 forEach implementation
 if ( !Array.prototype.forEach ) {
   Array.prototype.forEach = function (fn) {
     var len = this.length || 0, i = 0, thisp = arguments[1];
@@ -97,8 +93,9 @@ if ( !Array.prototype.forEach ) {
       /** 
        *  $.isObj( arg ) -> Boolean, object was created with {} or new Object()
        **/    
-      //  Adapted From jQuery.isPlainObject() -- Replaces Pollen.isObjLiteral()
       isObj: function( arg ) {
+        //  Adapted From jQuery.isPlainObject() -- Replaces Pollen.isObjLiteral()
+        
         if ( !arg ) {
           return false;
         }
@@ -115,17 +112,6 @@ if ( !Array.prototype.forEach ) {
 
         return key === undefined || hasOwn.call( arg, key );
       },
-      /** 
-       *  $.isEmptyObj( arg ) -> Boolean, Empty Object
-       **/
-      //  Adapted from jQuery.isEmptyObject() 
-      isEmptyObj: function ( arg ) { 
-        
-        for (var prop in arg) { 
-          return false; 
-        } 
-        return true; 
-      },      
       /** 
        *  $.isArr( arg ) -> Boolean, Array
        **/    
@@ -313,6 +299,7 @@ if ( !Array.prototype.forEach ) {
       }, 
       /** 
        *  $.getIndex( array, needle ) -> Int, index of [needle] in [array]
+       *  DEPRECATED
        **/         
       getIndex:     function(arr, arg) {
         var _index  = arr.indexOf(arg);
@@ -764,7 +751,7 @@ if ( !Array.prototype.forEach ) {
       },
       /*
       http://goessner.net/articles/JsonPath/
-      2008 C. Jason E. Smith, Apache License, Version 2.0 (the "License");
+      C. Jason E. Smith, Apache License, Version 2.0 (the "License");
             
       OVERVIEW:
       JSONPath api (http://goessner.net/articles/JsonPath/) - Similar to XQuery.
@@ -949,7 +936,9 @@ if ( !Array.prototype.forEach ) {
       /**
         TODO - NEW FEATURE
         
-        - Add support for workers to spawn new workers.
+        - Add Support for workers to spawn new workers.
+        
+        - Add Support for EventSource
     
       */
 
@@ -976,9 +965,9 @@ if ( !Array.prototype.forEach ) {
         }
         
         _msg.WORKER_ID  = Pollen.identity;
-        _msgStr         = JSON.stringify(_msg);
-        
-        return postMessage( _msgStr );
+
+
+        return postMessage( _msg );
         
       },
       //  DEPRECATE
@@ -998,13 +987,13 @@ if ( !Array.prototype.forEach ) {
         //  Worker receives message, behaviour is similar to $().ready()
         return  addEventListener('message', function (event) {
           
-          var message     = JSON.parse(event.data);
+          var message     = event.data;
           
           if ( Pollen.identity == '' ) {
             Pollen.identity = message.WORKER_ID;
           }
 
-          return fn.call(worker, message, event);
+          return fn.call(event, message);
 
         }, false);      
       }
@@ -1051,5 +1040,3 @@ if ( !Array.prototype.forEach ) {
       });
       
 })(this);
-
-

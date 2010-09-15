@@ -1,5 +1,5 @@
 // IMPORT POLLEN
-importScripts('jquery.hive.pollen.js');
+importScripts('../jquery.hive.pollen.js');
 
 
 

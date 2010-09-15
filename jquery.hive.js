@@ -23,14 +23,15 @@
     //  Thread Cache
     _threads        = [], 
     //  Thread Callback Cache
-    _fnCache      = {},
+    _fnCache        = {},
     //  Last thread id
     _lastThreadInt  = 0
     ;
     function _addMessageListener(worker, callback) {
     
       worker.addEventListener('message', function (event) { 
-        var fn    = callback, response = JSON.parse(event.data);
+        var fn    = callback, 
+            response = event.data;
 
 
         if ( response.SEND_TO ) {
@@ -215,9 +216,14 @@
         }
 
         _msg.WORKER_ID  = this.WORKER_ID;
-        _msgStr         = JSON.stringify(_msg);
+        //_msgStr         = JSON.stringify(_msg);
 
-        this.postMessage(_msgStr);
+        //this.postMessage(_msgStr);
+
+        
+
+        this.postMessage(_msg);
+
 
         this._lastMessage = _msgStr;
 

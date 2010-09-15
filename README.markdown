@@ -19,3 +19,100 @@
 
 ### [jQuery.Hive.Pollen.js API](http://dev.pollenjs.com/hive/jquery.hive.pollen.php)
 
+
+# Basic Client Setup
+# (assumes jquery-1.4.2.js and jquery.hive.js are loaded)
+
+  $(function () {
+
+    $.Hive.create({
+
+      worker: 'worker.js',
+      receive: function (data) {
+
+        console.group('RECEIVED MESSAGE - WORKER: #' + data._from_);
+          console.log( data );  
+        console.groupEnd();   
+
+        /*
+        ------------------------------------------------------
+          Possible uses:
+
+          Populate a massive data table...
+
+          Update a browser based IM client
+
+          Update a feed reader app ( 1-to-1 worker to feed?)
+        ------------------------------------------------------        
+        */
+
+      },
+      created: function (hive) {
+
+        /*
+        ------------------------------------------------------
+          Possible uses:
+
+          Impress the hell out of your friends by 
+          executing code after all the workers are created
+        ------------------------------------------------------  
+        */        
+      }
+    });
+
+    /*
+    ------------------------------------------------------
+      This contradicts what I noted above, but  it's for 
+      illustration purposes, so I'm ok with that.
+    ------------------------------------------------------  
+    */        
+
+
+    $( $.Hive.get(1) ).send({ 
+
+      "message" : { 
+        "a" : "a-value",
+        "b" : "b-value",
+        "c" : "c-value"
+      }      
+
+    });
+
+    /*
+    ------------------------------------------------------
+      Alternative syntax
+    ------------------------------------------------------      
+    */
+    $.Hive.get(1).send({ 
+
+      "message" : { 
+        "a" : "a-value",
+        "b" : "b-value",
+        "c" : "c-value"
+      }      
+
+    });  
+
+
+    /*
+    ------------------------------------------------------
+      Specify an additional callback
+    ------------------------------------------------------      
+    */
+    $.Hive.get(1).send({ 
+
+      "message" : { 
+        "a" : "a-value",
+        "b" : "b-value",
+        "c" : "c-value"
+      }      
+
+    }, function (data) {
+
+      console.log('This is from a task specific message receipt callback');
+
+    });  
+
+
+  });
+

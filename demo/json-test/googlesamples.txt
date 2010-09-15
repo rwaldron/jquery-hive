@@ -1,0 +1,4 @@
+http://code.google.com/apis/gdata/samples/cal_sample.html
+
+
+http://code.google.com/apis/gdata/samples.html#JSON

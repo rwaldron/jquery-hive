@@ -8,17 +8,11 @@
     <link href="blueprint-0.8.css"  rel="stylesheet" type="text/css" />
     <link href="jquery.ui-1.8.css"  rel="stylesheet" type="text/css" />
     
-    <link href="hive.worker.js" rel="x-import-cache"  />
-    <link href="hive.pollen.js" rel="x-import-cache"  />
-    
-    <link href="hive.worker.js" rel="prefetch"  />
-    <link href="hive.pollen.js" rel="prefetch"  />
-    <!-- x-import-cache -->
 
     <script src="jquery-latest.js"></script>
     <script src="jquery.ui.min-1.8.js"></script>
     
-    <script src="jquery.hive.js"></script>
+    <script src="../jquery.hive.js"></script>
     <script src="hive.demo.js"></script>
     
   
