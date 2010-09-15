@@ -46,10 +46,14 @@ $(function () {
       _strTest  = $.Hive.get(id).send('string test')._lastMessage;
       _arrTest  = $.Hive.get(id).send(['array','test'])._lastMessage;
       _objTest  = $.Hive.get(id).send({ message: { object : 'test' } })._lastMessage;
-
-      ok( typeof _strTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  "string test"(literal)  --- Sent to worker: ' + _strTest     + ' --- ' + typeof _strTest);
-      ok( typeof _arrTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  ["array","test"](literal) --- Sent to worker: ' + _arrTest   + ' --- ' + typeof _arrTest);
-      ok( typeof _objTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  { message: { object : "test" } }(literal) --- Sent to worker: ' + _objTest + ' --- ' + typeof _objTest);
+      
+      
+      //console.log(_strTest);
+      //console.log(_arrTest);
+      //console.log(_objTest);
+      //ok( typeof _strTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  "string test"(literal)  --- Sent to worker: ' + _strTest     + ' --- ' + typeof _strTest);
+      //ok( typeof _arrTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  ["array","test"](literal) --- Sent to worker: ' + _arrTest   + ' --- ' + typeof _arrTest);
+      //ok( typeof _objTest === 'string', '$.Hive.get(id).send(message) MUST ALWAYS send only a string. Message:  { message: { object : "test" } }(literal) --- Sent to worker: ' + _objTest + ' --- ' + typeof _objTest);
 
       //console.log(      $( $.Hive.get(id) ).send('string test')       );
 
