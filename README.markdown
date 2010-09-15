@@ -116,3 +116,52 @@
 
   });
 
+
+## Basic Worker Example 
+
+  importScripts('jquery.hive.pollen.js');
+
+  $(function (data) {
+
+    // `this` equals WorkerGlobalScope
+
+    $.ajax.get({  
+      url: 'get-data-from-the-server.php',  
+      dataType:'json', 
+      data: $.param(data.message), 
+      success: function(jsonObj) { 
+
+        //  Assume its a list of companies with some contact data.
+
+        $.send( 
+          $.unique( 
+            $.filter(jsonObj, function (obj) { 
+          
+              //  If not passed in the data property above, we could filter here.
+              //  Not the most efficient way, the example is really to illustrate Pollen's syntax
+
+              if ( $.inStr(obj.company, data.company) ) { 
+                return true; 
+              } 
+              return false;
+          
+            })
+          )
+        );
+
+        // OR...
+
+        $.send( 
+          $.query(
+          
+            //  Get filtered data with a JSONPath query
+            "?company='"+data.company+"'", 
+            jsonObj
+          
+          )
+        );
+      } 
+    });      
+
+
+  });
