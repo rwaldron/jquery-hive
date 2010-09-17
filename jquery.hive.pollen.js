@@ -995,17 +995,18 @@ if ( !Array.prototype.forEach ) {
       }
     },
     /**
-      JSON2
+      JSON2 Convenience shorthands
+      
     */
     json: {
       /** 
-       *  $.decode( arg ) -> JSON as String, turns JSON [arg] into a str
+       *  $.encode( arg ) -> JSON Object, turns [arg] into JSON (Convenience shorthand)
        **/       
-      decode:     function ( arg ) { return JSON.stringify(arg); },
+      encode:     JSON.parse,
       /** 
-       *  $.encode( arg ) -> JSON Object, turns [arg] into JSON
+       *  $.decode( arg ) -> JSON as String, turns JSON [arg] into a str  (Convenience shorthand)
        **/       
-      encode:     function ( arg ) { return JSON.parse(arg);     } 
+      decode:     JSON.stringify
     }
   };
   

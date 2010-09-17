@@ -786,6 +786,41 @@ function enumeratedEquals(iterable, expected, message)  {
   });
   
   
+  module("$.json.*");
+  
+  
+  test("$.encode / $.toObj", function () {
+  
+
+
+      same( $.encode("{}"), {}, "Plain object parsing." );
+      same( $.encode('{"test":1}'), {"test":1}, "Plain object parsing." );
+
+      same( $.encode('\n{"test":1}'), {"test":1}, "Make sure leading whitespaces are handled." );
+
+      
+      
+      try {
+        $.encode("{a:1}");
+        ok( false, "Test malformed JSON string." );
+      } catch( e ) {
+        ok( true, "Test malformed JSON string." );
+      }
+  });
+  
+
+  test("$.decode / $.toStr", function () {
+  
+
+      equals( $.decode( null ), "null", "`null` in, string null out." );
+      
+
+      same( $.decode({}), "{}", "Plain object to string" );
+      same( $.decode({test:1}), '{"test":1}', "Plain object to string" );
+      
+  });
+
+  
   module("$.data.*");
   
   
