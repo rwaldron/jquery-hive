@@ -1,3 +1,15 @@
+if ( !window['console'] ) {
+  var console = {}, 
+      methods = 'log debug info warn error exception assert dir dirxml trace group groupEnd groupCollapsed time timeEnd profile profileEnd count clear notifyFirebug getFirebugElement firebug element'.split(' ');
+  
+  for ( var m in methods ) {
+    console[ methods[m] ] = function () {
+      //Array.prototype.slice.call(arguments)
+    };
+  }  
+}
+
+
 function enumeratedEquals(iterable, expected, message)  {
   var x = 0;
   
@@ -834,8 +846,7 @@ function enumeratedEquals(iterable, expected, message)  {
     equals(result.length, 1, "$.query(\"?foo='bar'\", _object_a) should return the correct number of results");
     equals(result[0].id, 1, "$.query(\"?foo='bar'\", _object_a) should return the correct object");
     
-    console.log(result);
-
+    
     result = $.query("?foo='x'", _object_a);
     equals(result.length, 0, "$.query(\"?foo='x'\", _object_a) should return an empty result if there are no value matches");
 

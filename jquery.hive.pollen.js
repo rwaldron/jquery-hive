@@ -358,10 +358,10 @@ if ( !Array.prototype.forEach ) {
         
         for ( var val in arg ) {
           if ( !Pollen.array.inArr(_cache, JSON.stringify(arg[val])) ) {
-            ret.push(arg[val]);
+            ret[ ret.length ] = arg[val];
             //  stringify the array element to make it easily compared 
             //  if we are working with an object and not an array
-            _cache.push(JSON.stringify(arg[val]));
+            _cache[ _cache.length ] = JSON.stringify(arg[val]);
           }          
         }
         return ret;
@@ -426,7 +426,7 @@ if ( !Array.prototype.forEach ) {
         
         for ( ; i < len; i++ ) {
           if ( fn(arg[i], i) ) {
-            ret.push(arg[i]);
+            ret[ ret.length ] = arg[i];
           }
         }
         
@@ -466,13 +466,9 @@ if ( !Array.prototype.forEach ) {
           }
 
           if ( val.match(expr) ) {
-            //ret.push(val);
             
-            
-            ret.push(  fn ? 
-                        fn.call(arr, val, i) : 
-                        val );
-            
+            ret[ ret.length ] = fn ? fn.call(arr, val, i) :  val;
+
           }        
         });
 
@@ -506,7 +502,7 @@ if ( !Array.prototype.forEach ) {
       pick: function( arr, prop ) {
         var ret = [];
         Pollen.array.each(arr, function(i, val) {
-          ret.push(val[prop]);
+          ret[ ret.length ] = val[prop];
         });
         return ret;
       },      
@@ -537,7 +533,7 @@ if ( !Array.prototype.forEach ) {
                   
                   if ( !Pollen.evaluate.eq(key, [undefined,null,false] ) ) {
                     if ( Pollen.evaluate.isArr(ret) ) {
-                      ret.push(key)
+                      ret[ ret.length ] = key;
                     }
                     else {
                       ret[key] = key;
@@ -558,22 +554,22 @@ if ( !Array.prototype.forEach ) {
     object: {
       //  Object
       keys:         function( obj ) {
-        var keys = [];
+        var ret = [];
         for (var _prop in  obj ) {
           if (  obj[_prop] ) {
-            keys.push(_prop);
+            ret[ ret.length ] = _prop;
           }
         }        
-        return keys;
+        return ret;
       },
       values:       function( obj ) {
-        var values = [];
+        var ret = [];
         for (var _prop in  obj )   {
           if (  obj[_prop] ) {          
-            values.push( obj[_prop]);
+            ret[ ret.length ] = obj[_prop];
           }
         }      
-        return values;
+        return ret;
       },
       /** 
        *  $.extend( object, _object ) -> Object, copy properties fron [_object] to [object]
@@ -770,7 +766,7 @@ if ( !Array.prototype.forEach ) {
                       start = (start < 0) ? Math.max(0,start+len) : Math.min(len,start);
                       end   = (end < 0) ? Math.max(0,end+len) : Math.min(len,end);
                       for(var i=start; i<end; i+=step){
-                         ret.push(obj[i]);
+                         ret[ ret.length ] = obj[i] ;
                       }
                       return ret;
                     }
@@ -782,17 +778,17 @@ if ( !Array.prototype.forEach ) {
                         if(name){
                           if(name===true && !(obj instanceof Array)){
                             //recursive object search
-                            ret.push(obj);
+                            ret[ ret.length ] = obj;
                           }else if(obj[name]){
                             // found the name, add to our results
-                            ret.push(obj[name]);
+                            ret[ ret.length ] = obj[name];
                           }
                         }
                         for(var i in obj){
                           var val = obj[i];
                           if(!name){
                             // if we don't have a name we are just getting all the properties values (.* or [*])
-                            ret.push(val);
+                            ret[ ret.length ] = val;
                           }else if(val && typeof val == 'object'){
 
                             walk(val);
@@ -808,7 +804,7 @@ if ( !Array.prototype.forEach ) {
                           return obj[name[0]];
                         }
                         for(var i = 0; i < name.length; i++){
-                          ret.push(obj[name[i]]);
+                          ret[ ret.length ] = obj[name[i]];
                         }
                       }else{
                         // otherwise we expanding
@@ -827,12 +823,12 @@ if ( !Array.prototype.forEach ) {
                             // with objects we prevent duplicates with a marker property
                             if(!value.__included){
                               value.__included = true;
-                              ret.push(value);
+                              ret[ ret.length ] = value;
                             }
                           }else if(!primitives[value + typeof value]){
                             // with primitives we prevent duplicates by putting it in a map
                             primitives[value + typeof value] = true;
-                            ret.push(value);
+                            ret[ ret.length ] = value;
                           }
                         }
                       }
