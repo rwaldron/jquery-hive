@@ -1015,9 +1015,9 @@ if ( !Array.prototype.forEach ) {
   p = $ = new function WorkerOnMessage() {
     if ( arguments.length ) {
       if ( Pollen.evaluate.isFn(arguments[0]) ) {
-        var received  = arguments[0];
-        
-        return Pollen.worker.receive(received);
+
+        return Pollen.worker.receive(arguments[0]);
+
       }
     }
     return WorkerOnMessage;
