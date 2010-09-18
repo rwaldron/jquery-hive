@@ -23,7 +23,7 @@ if ( !Array.prototype.forEach ) {
 }
 
 
-(function (worker) {
+;(function (worker) {
   
   var Pollen  = function() {
     this[0] = worker;
@@ -251,21 +251,21 @@ if ( !Array.prototype.forEach ) {
       /** 
        *  $.each( object, function ) -> Enumerate [object] (object,array), apply [function]
        **/      
-      each:           function( obj, fn ) {
+      each:           function( arg, fn ) {
         
         //  THIS WHOLE METHOD NEEDS TO BE UPDATE TO USE forEach()
-        var i = 0, len = obj.length;
+        var i = 0, len = arg.length;
         
-        if ( Pollen.evaluate.isArr(obj) ) {
+        if ( Pollen.evaluate.isArr(arg) ) {
           for ( ; i < len; i++) {
-            fn.call(obj, i, obj[i]); 
+            fn.call(arg, i, arg[i]); 
           }
         }
 
-        if ( Pollen.evaluate.isObj(obj) ) {
-          for ( var _member in obj ) {
-            if ( obj[_member] !== undefined ) {
-              fn.call(obj[_member], _member, obj[_member], i++);
+        if ( Pollen.evaluate.isObj(arg) ) {
+          for ( var prop in arg ) {
+            if ( arg[prop] ) {
+              fn.call(arg[prop], prop, arg[prop], i++);
             }            
           }
         }
@@ -308,9 +308,9 @@ if ( !Array.prototype.forEach ) {
                       false );
       },
       /** 
-       *  $.inArr( array, needle ) -> Boolean, true if [needle] in [array]
+       *  $.inArray( array, needle ) -> Boolean, true if [needle] in [array]
        **/               
-      inArr:        function(arr, arg) {
+      inArray:        function(arr, arg) {
         var key;
 
         for (key in arr) {
@@ -329,14 +329,14 @@ if ( !Array.prototype.forEach ) {
           return [].concat(arg);
         }
 
-        var _clone = Pollen.evaluate.isArr(arg) ? [] : {};
+        var clone = Pollen.evaluate.isArr(arg) ? [] : {};
 
         for (var i in obj) {
           if ( hasOwn.call(obj, i ) ) {
-            _clone[i] = this.clone(obj[i]);
+            clone[i] = this.clone(obj[i]);
           }
         }
-        return _clone;
+        return clone;
       },
       /** 
        *  $.last( array ) -> Array Item, last item in [array]
@@ -354,14 +354,14 @@ if ( !Array.prototype.forEach ) {
        *  $.unique( arg ) -> Array || Object, removes duplicate values from [arg](array||object), returns uniques
        **/           
       unique:       function(arg) {
-        var i = 0, ret  = [], _cache = [];
+        var i = 0, ret  = [], cache = [];
         
         for ( var val in arg ) {
-          if ( !Pollen.array.inArr(_cache, JSON.stringify(arg[val])) ) {
-            ret[ ret.length ] = arg[val];
-            //  stringify the array element to make it easily compared 
-            //  if we are working with an object and not an array
-            _cache[ _cache.length ] = JSON.stringify(arg[val]);
+          if ( !Pollen.array.inArray(cache, JSON.stringify(arg[val])) ) {
+            ret[ ret.length ]     = arg[val];
+            //  stringify the array element
+            //  this will allow faster/easier comparison
+            cache[ cache.length ] = JSON.stringify(arg[val]);
           }          
         }
         return ret;
@@ -371,15 +371,15 @@ if ( !Array.prototype.forEach ) {
        **/       
       merge:        function( arr ) {
       
-        var merged = arr;
-        for (var i = 1; i < arguments.length; i++) {
+        var merged = arr, i = 0;
+        
+        // why? var i = 1
+        for ( ; i < arguments.length; i++) {
           
-          if ( Pollen.evaluate.isArr(arguments[i]) )  {
-            merged = merged.concat(arguments[i]);
-          }
-          else {
-            merged  = Pollen.object.extend(merged, arguments[i]);
-          }
+
+            merged = Pollen.evaluate.isArr(arguments[i]) ? 
+                        merged.concat(arguments[i]) : 
+                        Pollen.object.extend(merged, arguments[i]);
         }
         return Pollen.evaluate.isArr(merged) ? this.unique(merged) : merged;
 
