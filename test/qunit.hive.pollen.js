@@ -412,11 +412,11 @@ function enumeratedEquals(iterable, expected, message)  {
       return $.toArray(arguments);
     }
     
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
     argsToArray('foo', 'bar', 'baz');
     
-    equals( pollute.length, _testArr.length, 'pollute.length === _testArr.length' );
+    equals( pollute.length, array.length, 'pollute.length === array.length' );
     equals( $.isArr($.toArray('abc')), true, "$.isArr($.toArray('abc')) returned " );
     equals( $.isArr($.toArray('')), true  , "$.isArr($.toArray('')) returned ");
     equals( $.isArr($.toArray(null)), true, '$.isArr($.toArray(null)) returned ');
@@ -433,17 +433,17 @@ function enumeratedEquals(iterable, expected, message)  {
     expect(6);
     
     
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
     
-    equals( $.isAtIndex(_testArr, 0, 'foo'), true, "$.isAtIndex(_testArr, 0, 'foo') returned ");
-    equals( $.isAtIndex(_testArr, 1, 'bar'), true, "$.isAtIndex(_testArr, 0, 'bar') returned ");
-    equals( $.isAtIndex(_testArr, 2, 'baz'), true, "$.isAtIndex(_testArr, 0, 'baz') returned ");
+    equals( $.isAtIndex(array, 0, 'foo'), true, "$.isAtIndex(array, 0, 'foo') returned ");
+    equals( $.isAtIndex(array, 1, 'bar'), true, "$.isAtIndex(array, 0, 'bar') returned ");
+    equals( $.isAtIndex(array, 2, 'baz'), true, "$.isAtIndex(array, 0, 'baz') returned ");
     
 
-    equals( $.isAtIndex(_testArr, 0, 'baz'), false, "$.isAtIndex(_testArr, 0, 'baz') returned ");
-    equals( $.isAtIndex(_testArr, 1, 'foo'), false, "$.isAtIndex(_testArr, 0, 'foo') returned ");
-    equals( $.isAtIndex(_testArr, 2, 'bar'), false, "$.isAtIndex(_testArr, 0, 'bar') returned ");
+    equals( $.isAtIndex(array, 0, 'baz'), false, "$.isAtIndex(array, 0, 'baz') returned ");
+    equals( $.isAtIndex(array, 1, 'foo'), false, "$.isAtIndex(array, 0, 'foo') returned ");
+    equals( $.isAtIndex(array, 2, 'bar'), false, "$.isAtIndex(array, 0, 'bar') returned ");
 
 
 
@@ -452,53 +452,53 @@ function enumeratedEquals(iterable, expected, message)  {
     expect(3);
     
     
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
     
-    equals( $.getIndex(_testArr, 'foo'), 0, "$.getIndex(_testArr, 'foo') returned ");
-    equals( $.getIndex(_testArr, 'bar'), 1, "$.getIndex(_testArr, 'bar') returned ");
-    equals( $.getIndex(_testArr, 'baz'), 2, "$.getIndex(_testArr, 'baz') returned ");
+    equals( $.getIndex(array, 'foo'), 0, "$.getIndex(array, 'foo') returned ");
+    equals( $.getIndex(array, 'bar'), 1, "$.getIndex(array, 'bar') returned ");
+    equals( $.getIndex(array, 'baz'), 2, "$.getIndex(array, 'baz') returned ");
     
 
   });
-  test("$.inArr( array, needle )", function () {
+  test("$.inArray( array, needle )", function () {
     expect(6);
     
     
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
     
-    equals( $.inArr(_testArr, 'foo'), true, "$.inArr(_testArr, 'foo') returned ");
-    equals( $.inArr(_testArr, 'bar'), true, "$.inArr(_testArr, 'bar') returned ");
-    equals( $.inArr(_testArr, 'baz'), true, "$.inArr(_testArr, 'baz') returned ");
+    equals( $.inArray(array, 'foo'), true, "$.inArray(array, 'foo') returned ");
+    equals( $.inArray(array, 'bar'), true, "$.inArray(array, 'bar') returned ");
+    equals( $.inArray(array, 'baz'), true, "$.inArray(array, 'baz') returned ");
     
-    equals( $.inArr(_testArr, 'fooey'), false, "$.inArr(_testArr, 'fooey') returned ");
-    equals( $.inArr(_testArr, 'barry'), false, "$.inArr(_testArr, 'barry') returned ");
-    equals( $.inArr(_testArr, 'bazzy'), false, "$.inArr(_testArr, 'bazzy') returned ");
+    equals( $.inArray(array, 'fooey'), false, "$.inArray(array, 'fooey') returned ");
+    equals( $.inArray(array, 'barry'), false, "$.inArray(array, 'barry') returned ");
+    equals( $.inArray(array, 'bazzy'), false, "$.inArray(array, 'bazzy') returned ");
 
   });
   test("$.clone( array )", function () {
     expect(3)    
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
-    equals($.clone(_testArr)[0], _testArr[0], "$.clone(_testArr)[0] returned " );
-    equals($.clone(_testArr)[1], _testArr[1], "$.clone(_testArr)[1] returned " );
-    equals($.clone(_testArr)[2], _testArr[2], "$.clone(_testArr)[2] returned " );
+    equals($.clone(array)[0], array[0], "$.clone(array)[0] returned " );
+    equals($.clone(array)[1], array[1], "$.clone(array)[1] returned " );
+    equals($.clone(array)[2], array[2], "$.clone(array)[2] returned " );
   });
   test("$.last( array )", function () {
 
     expect(1)    
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
-    equals($.last(_testArr), _testArr[_testArr.length-1], "$.last(_testArr) returned " );
+    equals($.last(array), array[array.length-1], "$.last(array) returned " );
     
 
   });
   test("$.first( array )", function () {
     expect(1)    
-    var _testArr  = ['foo', 'bar', 'baz'];
+    var array  = ['foo', 'bar', 'baz'];
     
-    equals($.first(_testArr), _testArr[0], "$.first(_testArr) returned " );
+    equals($.first(array), array[0], "$.first(array) returned " );
 
   });
   test("$.unique( arg )", function () {
