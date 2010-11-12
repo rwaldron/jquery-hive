@@ -1,0 +1,6 @@
+
+2010-11-12 v 0.2.0
+
+  - Clean up onunload: terminate workers
+  
+  - Added events: workerCreated, workerDestroyed, workerMessageSent, workerMessageReceived
