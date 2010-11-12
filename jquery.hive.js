@@ -6,7 +6,7 @@
  *  Copyright 2010, Rick Waldron
  *  Dual licensed under the MIT or GPL Version 2 licenses.
  *
- *  v0.1.95
+ *  v0.2.00
  *  (see source for other credits)
  */
 
@@ -14,8 +14,7 @@
   /** 
    * jQuery.Hive  -> The Hive is a property of jQuery
    **/   
-  jQuery.Hive    = {};
-  jQuery.extend(jQuery.Hive, (function() {
+  jQuery.Hive = (function() {
 
     var /* @private */
     //  Thread ID Cache
@@ -32,7 +31,9 @@
       worker.addEventListener('message', function (event) { 
         var fn    = callback, 
             response = event.data;
-
+        
+        
+        jQuery.event.trigger( 'workerMessageReceived' );
 
         if ( response.SEND_TO ) {
         
@@ -99,7 +100,7 @@
         }
         
         var i = 0,
-        _options        = jQuery.extend(jQuery.Hive.options, options);
+        _options        = jQuery.extend({}, jQuery.Hive.options, options);
         _options.count  = options.count ? options.count   : 1;
 
         //  If threads exist, new threads to cache
@@ -117,6 +118,11 @@
           var 
           //  Create new worker thread
           thread = new Worker( _options.worker );
+          
+          //  Garbage collect
+          jQuery(window).unload( function () { 
+            thread.terminate();
+          });
 
           //  Save this worker's identity
           thread.WORKER_ID  = (function (i) { return i; })(i);
@@ -161,6 +167,11 @@
           
           jQuery.Hive.created = _wrapCreated;
         }
+        
+        
+        jQuery.event.trigger( 'workerCreated' );
+        
+        
         //  Allows assignment to var
         return _threads;
       },
@@ -186,7 +197,10 @@
         
         _threadsById  = {};
         _fnCache      = {};
-
+        
+        
+        jQuery.event.trigger( 'workerDestroyed' );
+        
         return _threads;
       },
       /** 
@@ -226,6 +240,10 @@
 
 
         this._lastMessage = _msgStr;
+        
+        
+        jQuery.event.trigger( 'workerMessageSent' );
+        
 
         return this;
       },        
@@ -243,7 +261,7 @@
         return _threads;
       }
     }
-  })() );
+  })();
   
   /** 
    *  jQuery.( $.Hive.get( id ) ).send( message ) -> Send [message] to worker thread 
