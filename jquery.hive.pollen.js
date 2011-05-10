@@ -23,10 +23,10 @@ if ( !Array.prototype.forEach ) {
 }
 
 
-;(function (worker) {
+;(function (WorkerGlobalScope) {
   
   var Pollen  = function() {
-    this[0] = worker;
+    this[0] = WorkerGlobalScope;
     return this;
   },
   
@@ -983,7 +983,7 @@ if ( !Array.prototype.forEach ) {
         //  Worker receives message, behaviour is similar to $().ready()
         return  addEventListener('message', function (event) {
           
-          var message     = event.data;
+          var message = event.data;
           
           if ( Pollen.identity == '' ) {
             Pollen.identity = message.WORKER_ID;
@@ -1032,7 +1032,7 @@ if ( !Array.prototype.forEach ) {
       .forEach(function (obj) {
         //  Copy specific module methods back to $ for concise and convenient syntax
         for ( var prop in Pollen[obj] ) {
-          p[prop] = $[prop]  = Pollen[obj][prop];  
+          p[prop] = $[prop] = Pollen[obj][prop];  
         }
       });
       

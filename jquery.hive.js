@@ -10,7 +10,7 @@
  *  (see source for other credits)
  */
 
-(function (jQuery) {
+(function(jQuery) {
   /** 
    * jQuery.Hive  -> The Hive is a property of jQuery
    **/   
@@ -18,22 +18,22 @@
 
     var /* @private */
     //  Thread ID Cache
-    _threadsById    = {},
+    _threadsById = {},
     //  Thread Cache
-    _threads        = [], 
+    _threads = [], 
     //  Thread Callback Cache
-    _fnCache        = {},
+    _fnCache = {},
     //  Last thread id
-    _lastThreadInt  = 0
-    ;
+    _lastThreadInt = 0;
+
     function _addMessageListener(worker, callback) {
     
-      worker.addEventListener('message', function (event) { 
-        var fn    = callback, 
+      worker.addEventListener("message", function(event) { 
+        var fn = callback, 
             response = event.data;
         
         
-        jQuery.event.trigger( 'workerMessageReceived' );
+        jQuery.event.trigger( "workerMessageReceived", response );
 
         if ( response.SEND_TO ) {
         
@@ -61,15 +61,15 @@
       /** 
        * jQuery.Hive.options -> Setup properties for jQuery.Hive.create( [options] )
        **/     
-      options:  {
+      options: {
         /** 
          * jQuery.Hive.options.count -> Set property from jQuery.Hive.create( { count: [int] } ), number of threads to create
          **/     
-        count:    1,  
+        count: 1,  
         /** 
          * jQuery.Hive.options.worker -> Set string property from jQuery.Hive.create( { worker: [file-name] } ), name of worker file
          **/     
-        worker: '',
+        worker: "",
         /** 
          * jQuery.Hive.options.receive -> Set callback from jQuery.Hive.create( { receive: [callback] } ), callback to execute when worker receives message (can be global or worker specific)
          **/     
@@ -80,38 +80,38 @@
         created: jQuery.noop,
         /** 
          * jQuery.Hive.options.special -> NOT IMPLEMENTED/INCOMPLETE  - Set callback as a second argument to $().send()
-         **/     
-        special: '',        
+         **/
+        special: "",
         /** 
          * jQuery.Hive.options.error() -> NOT IMPLEMENTED/INCOMPLETE  - Error handler
          **/ 
-        error:      function (event) {
+        error:  function( event ) {
           //  INCOMPLETE
         }
       },
       /** 
        * jQuery.Hive.create( options ) -> Array, create workers, returns array of all workers
        **/   
-      create: function ( options ) {
+      create: function( options ) {
         
         //  If no worker file is specified throw exception
-        if ( jQuery.Hive.options.worker == '' &&  !options.worker  ) {
+        if ( !jQuery.Hive.options.worker && !options.worker ) {
           throw "No Worker file specified";
         }
-        
+
         var i = 0,
         _options        = jQuery.extend({}, jQuery.Hive.options, options);
-        _options.count  = options.count ? options.count   : 1;
+        _options.count  = options.count ? options.count : 1;
 
         //  If threads exist, new threads to cache
         if ( _threads.length > 0 ) {
-          
+
           //  force thread count starting position to avoid overwriting existing threads        
-          i       = _lastThreadInt + 1;
+          i = _lastThreadInt + 1;
           //  set count to reflect added threads
-          _options.count   = _lastThreadInt + _options.count + 1;
+          _options.count = _lastThreadInt + _options.count + 1;
         }
-        
+
         //  Create specified number of threads
         for ( ; i < _options.count; i++ ) {
 
@@ -120,38 +120,38 @@
           thread = new Worker( _options.worker );
           
           //  Garbage collect
-          jQuery(window).unload( function () { 
+          jQuery( window ).unload( function() { 
             thread.terminate();
           });
 
           //  Save this worker's identity
-          thread.WORKER_ID  = (function (i) { return i; })(i);
+          thread.WORKER_ID  = (function(i) { return i; })(i);
           thread.id         = thread.WORKER_ID; // duplicitous... TODO: clean up   
 
           //  Define Hive properties
           thread.send       = jQuery.Hive.send;
-          thread.special    = '';
+          thread.special    = "";
           thread.onerror    = _options.error;
 
           var _wrapReceived  = function onmessage(event) {
             return _options.receive.call(this, event);
           };          
           
-          thread.receive    = _wrapReceived;
+          thread.receive = _wrapReceived;
           
           _addMessageListener(thread, _wrapReceived);
 
           //  Store this callback in the Hive cache with assoc worker ID
-          _fnCache[thread.id]  = {
+          _fnCache[thread.id] = {
             active:   [ _wrapReceived ],
             inactive: []
           };
           
           //  Store this worker in the Hive cache - by ID
-          _threadsById[thread.id]   = thread;
+          _threadsById[thread.id] = thread;
           
           //  Store last thread id created
-          _lastThreadInt            = thread.id;
+          _lastThreadInt = thread.id;
           
           //  Store this worker in the Hive cache
           _threads.push( thread );
@@ -159,31 +159,30 @@
 
         //  If a created callback is defined, wrap and fire
         if ( _options.created ) {
-          var _wrapCreated  = function () {
-            _options.created.call(this, _threads);
-            return _threads;
-          };
+          var _wrapCreated = function() {
+                _options.created.call(this, _threads);
+                return _threads;
+              };
           _wrapCreated();
           
           jQuery.Hive.created = _wrapCreated;
         }
-        
-        
-        jQuery.event.trigger( 'workerCreated' );
-        
-        
+
+        jQuery.event.trigger( "workerCreated" );
+
         //  Allows assignment to var
         return _threads;
       },
       /** 
        * jQuery.Hive.destroy( [id] ) -> destroy all or specified worker by id
-       **/      
-      destroy:  function ( id ) {
-        if ( id ) {
-          delete _threadsById[id];
-          delete _fnCache[id];
+       **/
+      destroy:  function( id ) {
 
-          _threads  = jQuery.map(_threads, function (obj) {
+        if ( id ) {
+          delete _threadsById[ id ];
+          delete _fnCache[ id ];
+
+          _threads = jQuery.map(_threads, function(obj) {
                                               if ( obj.id != id ) {
                                                 return obj;
                                               }
@@ -192,23 +191,22 @@
         }
 
         //  Delete All
-        jQuery.Hive.options.count   = 0;
+        jQuery.Hive.options.count = 0;
         _threads.length = 0;
-        
-        _threadsById  = {};
-        _fnCache      = {};
-        
-        
-        jQuery.event.trigger( 'workerDestroyed' );
-        
+
+        _threadsById = {};
+        _fnCache = {};
+
+        jQuery.event.trigger( "workerDestroyed" );
+
         return _threads;
       },
       /** 
        * jQuery.Hive.get( id ).send( message, callback ) -> Send [message] to worker thread, set optional receive callback 
-       *  -->   SIMPLER ALTERNATIVE:  $.Hive.get(id).send( [message], function () {} )
+       *  -->   SIMPLER ALTERNATIVE:  $.Hive.get(id).send( [message], function() {} )
        *  -->   Allows for passing a jQuery.Hive.get(id) object to $() ie. $( $.Hive.get(id) ).send( [message] )
        **/     
-      send:  function ( message, /*not implemented*/callback ) {
+      send:  function( message, /*not implemented*/callback ) {
 
         var _msg  = message, _msgStr;
 
@@ -219,7 +217,7 @@
 
         //  if message is not an object (string || array)
         //  normalize it into an object
-        if ( typeof message == 'string' || jQuery.isArray(message) ) {
+        if ( typeof message == "string" || jQuery.isArray(message) ) {
           _msg  = {
             "message" : message
           };
@@ -242,7 +240,7 @@
         this._lastMessage = _msgStr;
         
         
-        jQuery.event.trigger( 'workerMessageSent' );
+        jQuery.event.trigger( "workerMessageSent" );
         
 
         return this;
@@ -252,7 +250,7 @@
        *  -->   $.Hive.get() returns all worker objects in the $.Hive
        *  -->   $.Hive.get(1) returns the worker object whose ID is 1
        **/     
-      get: function ( id ) {
+      get: function( id ) {
         if ( id !== undefined ) {
           //  Returns specified worker by [id] from private object cache
           return _threadsById[id];
@@ -269,7 +267,7 @@
    *  -->   Allows for passing a $.Hive.get(id) object to $() ie. $( $.Hive.get(id) ).send( [message] )
    **/    
   jQuery.fn.send    = function(message, callback) {
-    return this.each(function (i, thread) {
+    return this.each(function(i, thread) {
       thread.send(message, callback);
     });
   };
