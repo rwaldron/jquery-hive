@@ -747,176 +747,176 @@ if ( !Array.prototype.forEach ) {
        *  $.query( selector, object ) -> *, Query json or object with JSONPath selector
        *  --> http://goessner.net/articles/JsonPath/
        **/
-      query:     (function(){
-                    //  Special case slice
-                    function slice(obj,start,end,step){
-                      // handles slice operations: [3:6:2]
-                      var len=obj.length,ret = [];
-                      end   = end || len;
-                      start = (start < 0) ? Math.max(0,start+len) : Math.min(len,start);
-                      end   = (end < 0) ? Math.max(0,end+len) : Math.min(len,end);
-                      for(var i=start; i<end; i+=step){
-                         ret[ ret.length ] = obj[i] ;
-                      }
-                      return ret;
-                    }
-                    function expand(obj,name){
-                      // handles ..name, .*, [*], [val1,val2], [val]
-                      // name can be a property to search for, undefined for full recursive, or an array for picking by index
-                      var ret = [];
-                      function walk(obj){
-                        if(name){
-                          if(name===true && !(obj instanceof Array)){
-                            //recursive object search
-                            ret[ ret.length ] = obj;
-                          }else if(obj[name]){
-                            // found the name, add to our results
-                            ret[ ret.length ] = obj[name];
-                          }
-                        }
-                        for(var i in obj){
-                          var val = obj[i];
-                          if(!name){
-                            // if we don't have a name we are just getting all the properties values (.* or [*])
-                            ret[ ret.length ] = val;
-                          }else if(val && typeof val == 'object'){
+      query: (function(){
+               //  Special case slice
+               function slice(obj,start,end,step){
+                 // handles slice operations: [3:6:2]
+                 var len=obj.length,ret = [];
+                 end   = end || len;
+                 start = (start < 0) ? Math.max(0,start+len) : Math.min(len,start);
+                 end   = (end < 0) ? Math.max(0,end+len) : Math.min(len,end);
+                 for(var i=start; i<end; i+=step){
+                    ret[ ret.length ] = obj[i] ;
+                 }
+                 return ret;
+               }
+               function expand(obj,name){
+                 // handles ..name, .*, [*], [val1,val2], [val]
+                 // name can be a property to search for, undefined for full recursive, or an array for picking by index
+                 var ret = [];
+                 function walk(obj){
+                   if(name){
+                     if(name===true && !(obj instanceof Array)){
+                       //recursive object search
+                       ret[ ret.length ] = obj;
+                     }else if(obj[name]){
+                       // found the name, add to our results
+                       ret[ ret.length ] = obj[name];
+                     }
+                   }
+                   for(var i in obj){
+                     var val = obj[i];
+                     if(!name){
+                       // if we don't have a name we are just getting all the properties values (.* or [*])
+                       ret[ ret.length ] = val;
+                     }else if(val && typeof val == 'object'){
 
-                            walk(val);
-                          }
-                        }
-                      }
-                      if( Pollen.evaluate.isArr(name) ){
-                        // this is called when multiple items are in the brackets: [3,4,5]
-                        if(name.length==1){
-                          // this can happen as a result of the parser becoming confused about commas
-                          // in the brackets like [@.func(4,2)]. Fixing the parser would require recursive
-                          // analsys, very expensive, but this fixes the problem nicely.
-                          return obj[name[0]];
-                        }
-                        for(var i = 0; i < name.length; i++){
-                          ret[ ret.length ] = obj[name[i]];
-                        }
-                      }else{
-                        // otherwise we expanding
-                        walk(obj);
-                      }
-                      return ret;
-                    }
+                       walk(val);
+                     }
+                   }
+                 }
+                 if( Pollen.evaluate.isArr(name) ){
+                   // this is called when multiple items are in the brackets: [3,4,5]
+                   if(name.length==1){
+                     // this can happen as a result of the parser becoming confused about commas
+                     // in the brackets like [@.func(4,2)]. Fixing the parser would require recursive
+                     // analsys, very expensive, but this fixes the problem nicely.
+                     return obj[name[0]];
+                   }
+                   for(var i = 0; i < name.length; i++){
+                     ret[ ret.length ] = obj[name[i]];
+                   }
+                 }else{
+                   // otherwise we expanding
+                   walk(obj);
+                 }
+                 return ret;
+               }
 
-                    function distinctFilter(arr, fn){
-                      // does the filter with removal of duplicates in O(n)
-                      var ret = [],primitives = {}, len = arr.length, i=0;
-                      for( ; i<len; ++i ){
-                        var value = arr[i];
-                        if( fn(value, i, arr) ){
-                          if((typeof value == 'object') && value){
-                            // with objects we prevent duplicates with a marker property
-                            if(!value.__included){
-                              value.__included = true;
-                              ret[ ret.length ] = value;
-                            }
-                          }else if(!primitives[value + typeof value]){
-                            // with primitives we prevent duplicates by putting it in a map
-                            primitives[value + typeof value] = true;
-                            ret[ ret.length ] = value;
-                          }
-                        }
-                      }
-                      for(i=0,len=ret.length; i<len; ++i){
-                        // cleanup the marker properties
-                        if(ret[i]){
-                          delete ret[i].__included;
-                        }
-                      }
-                      return ret;
-                    }
+               function distinctFilter(arr, fn){
+                 // does the filter with removal of duplicates in O(n)
+                 var ret = [],primitives = {}, len = arr.length, i=0;
+                 for( ; i<len; ++i ){
+                   var value = arr[i];
+                   if( fn(value, i, arr) ){
+                     if((typeof value == 'object') && value){
+                       // with objects we prevent duplicates with a marker property
+                       if(!value.__included){
+                         value.__included = true;
+                         ret[ ret.length ] = value;
+                       }
+                     }else if(!primitives[value + typeof value]){
+                       // with primitives we prevent duplicates by putting it in a map
+                       primitives[value + typeof value] = true;
+                       ret[ ret.length ] = value;
+                     }
+                   }
+                 }
+                 for(i=0,len=ret.length; i<len; ++i){
+                   // cleanup the marker properties
+                   if(ret[i]){
+                     delete ret[i].__included;
+                   }
+                 }
+                 return ret;
+               }
 
-                    return function(query,obj){
+               return function(query,obj){
 
-                        var depth = 0,strs = [], prefix = '', executor = '';
+                   var depth = 0,strs = [], prefix = '', executor = '';
 
-                        function pcall(name){
-                          // creates a function call and puts the current expression in a parameter for a call
-                          prefix = name + "(" + prefix;
-                        }
-                        function makeRegex(t,a,b,c,d){
-                          // creates a regular expression matcher for when wildcards and ignore case is used
-                          return strs[d].match(/[\*\?]/) || c == '~' ?
-                              "/^" + strs[d].substring(1,strs[d].length-1).replace(/\\([btnfr\\"'])|([^\w\*\?])/g,"\\$1$2").replace(/([\*\?])/g,".$1") + (c == '~' ? '$/i' : '$/') + ".test(" + a + ")" :
-                              t;
-                        }
+                   function pcall(name){
+                     // creates a function call and puts the current expression in a parameter for a call
+                     prefix = name + "(" + prefix;
+                   }
+                   function makeRegex(t,a,b,c,d){
+                     // creates a regular expression matcher for when wildcards and ignore case is used
+                     return strs[d].match(/[\*\?]/) || c == '~' ?
+                         "/^" + strs[d].substring(1,strs[d].length-1).replace(/\\([btnfr\\"'])|([^\w\*\?])/g,"\\$1$2").replace(/([\*\?])/g,".$1") + (c == '~' ? '$/i' : '$/') + ".test(" + a + ")" :
+                         t;
+                   }
 
-                        query = query.replace(/"(\\.|[^"\\])*"|'(\\.|[^'\\])*'|[\[\]]/g,function(t){
-                          depth += t == '[' ? 1 : t == ']' ? -1 : 0; // keep track of bracket depth
-                          return (t == ']' && depth > 0) ? '`]' : // we mark all the inner brackets as skippable
-                              (t.charAt(0) == '"' || t.charAt(0) == "'") ? "`" + (strs.push(t) - 1) :// and replace all the strings
-                                t;
-                          })
-                          // change the equals to comparisons
-                          .replace(/([^<>=]=)([^=])/g,"$1=$2")
-                          .replace(/@|(\.\s*)?[a-zA-Z\$_]+(\s*:)?/g,function(t){
-                            return t.charAt(0) == '.' ? t : // leave .prop alone
-                              t == '@' ? "$obj" :// the reference to the current object
-                              (t.match(/:|^(\$|Math|true|false|null)$/) ? "" : "$obj.") + t; // plain names should be properties of root... unless they are a label in object initializer
-                          })
-                          .replace(/\.?\.?\[(`\]|[^\]])*\]|\?.*|\.\.([\w\$_]+)|\.\*/g,function(t,a,b){
-                            var oper = t.match(/^\.?\.?(\[\s*\^?\?|\^?\?|\[\s*==)(.*?)\]?$/); // [?expr] and ?expr and [=expr and =expr
-                            if(oper){
-                              var prefix = '';
-                              if(t.match(/^\./)){
-                                // recursive object search
-                                pcall("expand");
-                                prefix = ",true)";
-                              }
-                              pcall(oper[1].match(/\=/) ? "Pollen.array.map" : oper[1].match(/\^/) ? "distinctFilter" : "Pollen.array.filter");
-                              return prefix + ",function($obj){return " + oper[2] + "})";
-                            }
-                            oper = t.match(/^\[\s*([\/\\].*)\]/); // [/sortexpr,\sortexpr]
-                            if(oper){
-                              // make a copy of the array and then sort it using the sorting expression
-                              return ".concat().sort(function(a,b){" + oper[1].replace(/\s*,?\s*([\/\\])\s*([^,\\\/]+)/g,function(t,a,b){
-                                  return "var av= " + b.replace(/\$obj/,"a") + ",bv= " + b.replace(/\$obj/,"b") + // FIXME: Should check to make sure the $obj token isn't followed by characters
-                                      ";if(av>bv||bv==null){return " + (a== "/" ? 1 : -1) +";}\n" +
-                                      "if(bv>av||av==null){return " + (a== "/" ? -1 : 1) +";}\n";
-                              }) + "})";
-                            }
-                            oper = t.match(/^\[(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)\]/); // slice [0:3]
-                            if(oper){
-                              pcall("slice");
-                              return "," + (oper[1] || 0) + "," + (oper[2] || 0) + "," + (oper[3] || 1) + ")";
-                            }
-                            if(t.match(/^\.\.|\.\*|\[\s*\*\s*\]|,/)){ // ..prop and [*]
-                              pcall("expand");
-                              return (t.charAt(1) == '.' ?
-                                  ",'" + b + "'" : // ..prop
-                                    t.match(/,/) ?
-                                      "," + t : // [prop1,prop2]
-                                      "") + ")"; // [*]
-                            }
-                            return t;
-                          })
-                          .replace(/(\$obj\s*(\.\s*[\w_$]+\s*)*)(==|~)\s*`([0-9]+)/g,makeRegex)
-                          // create regex matching
-                          .replace(/`([0-9]+)\s*(==|~)\s*(\$obj(\s*\.\s*[\w_$]+)*)/g,function(t,a,b,c,d){ // and do it for reverse =
-                            return makeRegex(t,c,d,b,a);
-                          });
+                   query = query.replace(/"(\\.|[^"\\])*"|'(\\.|[^'\\])*'|[\[\]]/g,function(t){
+                     depth += t == '[' ? 1 : t == ']' ? -1 : 0; // keep track of bracket depth
+                     return (t == ']' && depth > 0) ? '`]' : // we mark all the inner brackets as skippable
+                         (t.charAt(0) == '"' || t.charAt(0) == "'") ? "`" + (strs.push(t) - 1) :// and replace all the strings
+                           t;
+                     })
+                     // change the equals to comparisons
+                     .replace(/([^<>=]=)([^=])/g,"$1=$2")
+                     .replace(/@|(\.\s*)?[a-zA-Z\$_]+(\s*:)?/g,function(t){
+                       return t.charAt(0) == '.' ? t : // leave .prop alone
+                         t == '@' ? "$obj" :// the reference to the current object
+                         (t.match(/:|^(\$|Math|true|false|null)$/) ? "" : "$obj.") + t; // plain names should be properties of root... unless they are a label in object initializer
+                     })
+                     .replace(/\.?\.?\[(`\]|[^\]])*\]|\?.*|\.\.([\w\$_]+)|\.\*/g,function(t,a,b){
+                       var oper = t.match(/^\.?\.?(\[\s*\^?\?|\^?\?|\[\s*==)(.*?)\]?$/); // [?expr] and ?expr and [=expr and =expr
+                       if(oper){
+                         var prefix = '';
+                         if(t.match(/^\./)){
+                           // recursive object search
+                           pcall("expand");
+                           prefix = ",true)";
+                         }
+                         pcall(oper[1].match(/\=/) ? "Pollen.array.map" : oper[1].match(/\^/) ? "distinctFilter" : "Pollen.array.filter");
+                         return prefix + ",function($obj){return " + oper[2] + "})";
+                       }
+                       oper = t.match(/^\[\s*([\/\\].*)\]/); // [/sortexpr,\sortexpr]
+                       if(oper){
+                         // make a copy of the array and then sort it using the sorting expression
+                         return ".concat().sort(function(a,b){" + oper[1].replace(/\s*,?\s*([\/\\])\s*([^,\\\/]+)/g,function(t,a,b){
+                             return "var av= " + b.replace(/\$obj/,"a") + ",bv= " + b.replace(/\$obj/,"b") + // FIXME: Should check to make sure the $obj token isn't followed by characters
+                                 ";if(av>bv||bv==null){return " + (a== "/" ? 1 : -1) +";}\n" +
+                                 "if(bv>av||av==null){return " + (a== "/" ? -1 : 1) +";}\n";
+                         }) + "})";
+                       }
+                       oper = t.match(/^\[(-?[0-9]*):(-?[0-9]*):?(-?[0-9]*)\]/); // slice [0:3]
+                       if(oper){
+                         pcall("slice");
+                         return "," + (oper[1] || 0) + "," + (oper[2] || 0) + "," + (oper[3] || 1) + ")";
+                       }
+                       if(t.match(/^\.\.|\.\*|\[\s*\*\s*\]|,/)){ // ..prop and [*]
+                         pcall("expand");
+                         return (t.charAt(1) == '.' ?
+                             ",'" + b + "'" : // ..prop
+                               t.match(/,/) ?
+                                 "," + t : // [prop1,prop2]
+                                 "") + ")"; // [*]
+                       }
+                       return t;
+                     })
+                     .replace(/(\$obj\s*(\.\s*[\w_$]+\s*)*)(==|~)\s*`([0-9]+)/g,makeRegex)
+                     // create regex matching
+                     .replace(/`([0-9]+)\s*(==|~)\s*(\$obj(\s*\.\s*[\w_$]+)*)/g,function(t,a,b,c,d){ // and do it for reverse =
+                       return makeRegex(t,c,d,b,a);
+                     });
 
-                        query = prefix + (query.charAt(0) == '$' ? "" : "$") + query.replace(/`([0-9]+|\])/g,function(t,a){
-                          //restore the strings
-                          return a == ']' ? ']' : strs[a];
-                        });
-                        // create a function within this scope (so it can use expand and slice)
+                   query = prefix + (query.charAt(0) == '$' ? "" : "$") + query.replace(/`([0-9]+|\])/g,function(t,a){
+                     //restore the strings
+                     return a == ']' ? ']' : strs[a];
+                   });
+                   // create a function within this scope (so it can use expand and slice)
 
-                        executor = eval("1&&function($,$1,$2,$3,$4,$5,$6,$7,$8,$9){var $obj=$;return " + query + "}");
+                   executor = eval("1&&function($,$1,$2,$3,$4,$5,$6,$7,$8,$9){var $obj=$;return " + query + "}");
 
-                        for( var i = 0; i< arguments.length-1; i++ ){
-                          arguments[i] = arguments[i+1];
-                        }
-                        return obj ? executor.apply(this,arguments) : executor;
-                      }
+                   for( var i = 0; i< arguments.length-1; i++ ){
+                     arguments[i] = arguments[i+1];
+                   }
+                   return obj ? executor.apply(this,arguments) : executor;
+                 }
 
 
-                  })()
+             })()
     },
     worker: {
       /**
