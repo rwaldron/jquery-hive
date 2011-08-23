@@ -6,24 +6,7 @@
 *   version: 0.1.91
 *   (see source for other credits)
 */
-//  ES5 forEach implementation
-if ( !Array.prototype.forEach ) {
-  Array.prototype.forEach = function(fn) {
-    var len = this.length || 0, i = 0, thisp = arguments[1];
-    if (typeof fn !== 'function')  {
-      throw new TypeError();
-    }
-
-    for ( ; i < len; i++) {
-      if (i in this) {
-        fn.call(thisp, this[i], i, this);
-      }
-    }
-  };
-}
-
-
-;(function(WorkerGlobalScope) {
+(function( WorkerGlobalScope ) {
 
   var Pollen  = function() {
     this[0] = WorkerGlobalScope;
@@ -97,8 +80,8 @@ if ( !Array.prototype.forEach ) {
 
         // Not own constructor property must be Object
         if ( arg.constructor &&
-              !hasOwn.call(arg, 'constructor')  &&
-                !hasOwn.call(arg.constructor.prototype, 'isPrototypeOf') ) {
+              !hasOwn.call(arg, "constructor")  &&
+                !hasOwn.call(arg.constructor.prototype, "isPrototypeOf") ) {
           return false;
         }
 
@@ -110,21 +93,20 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.isArr( arg ) -> Boolean, Array
        **/
-      isArr:        function( arg ) {
-        return arg !== null && typeof arg == 'object' &&
-                  'splice' in arg && 'join' in arg;
+      isArr: function( arg ) {
+        return Array.isArray( arg );
       },
       /**
        *  $.isRegExp( arg ) -> Boolean, Regular Expression
        **/
-      isRegExp:       function( arg )  {
+      isRegExp: function( arg )  {
         if ( arg )  {
 
           if ( new RegExp(/([[\]\/\\])/g).test(arg) === false ) {
             return false;
           }
 
-          return (new RegExp(arg)).test(null) || toStr.call(arg) == '[object RegExp]';
+          return (new RegExp(arg)).test(null) || toStr.call(arg) == "[object RegExp]";
         }
 
         return false;
@@ -132,25 +114,25 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.isFn( arg ) -> Boolean, Function
        **/
-      isFn:         function( arg ) {
-        return arg !== null && toStr.call(arg) === '[object Function]' && typeof arg == 'function';
+      isFn: function( arg ) {
+        return arg !== null && toStr.call(arg) === "[object Function]" && typeof arg == "function";
       },
       /**
        *  $.isStr( arg ) -> Boolean, String
        **/
-      isStr:        function( arg ) {
-        return arg !== null && typeof arg == 'string' && isNaN(arg);
+      isStr: function( arg ) {
+        return arg !== null && typeof arg == "string" && isNaN(arg);
       },
       /**
        *  $.isNum( arg ) -> Boolean, Number
        **/
-      isNum:        function( arg ) {
-        return arg !== null && typeof arg == 'number';
+      isNum: function( arg ) {
+        return arg !== null && typeof arg == "number";
       },
       /**
        *  $.isJson( arg ) -> Boolean, Valid JSON String
        **/
-      isJson:       function( arg ) {
+      isJson: function( arg ) {
         if ( arg === null ) return false;
 
         var _test = Pollen.evaluate.isObj(arg) ? JSON.stringify(arg) : arg;
@@ -160,9 +142,9 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.isDef( arg ) -> Boolean, Defined
        **/
-      isDef:        function( arg ) {
+      isDef: function( arg ) {
 
-        if ( !arg || arg === null || typeof arg === 'undefined' || Pollen.evaluate.isEmpty(arg) ) {
+        if ( !arg || arg === null || typeof arg === "undefined" || Pollen.evaluate.isEmpty(arg) ) {
           return false;
         }
 
@@ -171,14 +153,14 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.isNull( arg ) -> Boolean, Null
        **/
-      isNull:       function( arg ) {
+      isNull: function( arg ) {
         return arg === null;
       },
       /**
        *  $.isEmpty( arg ) -> Boolean, ''
        **/
-      isEmpty:      function( arg ) {
-        return arg == null || arg == '';
+      isEmpty: function( arg ) {
+        return arg == null || arg == "";
       },
       /**
        *  $.eq( arg, array ) -> Arg is equal to at least one definition in array
@@ -206,11 +188,13 @@ if ( !Array.prototype.forEach ) {
        **/
       trim: function( arg ) {
 
-        if ( typeof arg === 'undefined' || arg == null ) return '';
+        if ( arg == null ) {
+          return "";
+        }
 
-        arg = arg+'';
+        arg = arg+"";
 
-        return arg == '' ? '' : arg.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+        return arg == "" ? "" : arg.replace(/^\s\s*/, "").replace(/\s\s*$/, "");
       },
       /**
        *  $.inStr( arg ) -> Boolean, arg in string
@@ -229,10 +213,10 @@ if ( !Array.prototype.forEach ) {
         return false;
       },
       //  private.
-      _regExpEscape:  function(str) {
+      _regExpEscape: function(str) {
 
         if ( new RegExp(/([[\]\/\\])/g).test(str) === false ) {
-          return String(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g, '\\$1');
+          return String(str).replace(/([.*+?^=!:${}()|[\]\/\\])/g, "\\$1");
         }
         return str;
       }
@@ -277,7 +261,7 @@ if ( !Array.prototype.forEach ) {
         }
 
         if ( Pollen.evaluate.isStr(arg) ) {
-          return arg.split('');
+          return arg.split("");
         }
 
         var len = arg.length || 0, ret = [];
@@ -291,7 +275,7 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.isAtIndex( array, index, needle ) -> Boolean, Checks if [needle] is located at [index] in [array]
        **/
-      isAtIndex:  function( arr, i, arg ) {
+      isAtIndex: function( arr, i, arg ) {
         if ( arr[i] == arg ) {
           return true;
         }
@@ -299,22 +283,19 @@ if ( !Array.prototype.forEach ) {
       },
       /**
        *  $.inArray( array, needle ) -> Boolean, true if [needle] in [array]
+       *  $.inArray( needle, array ) -> Boolean, true if [needle] in [array]
        **/
-      inArray:        function(arr, arg) {
-        var key;
+      inArray: function( a, b ) {
+        var key,
+        needle = Array.isArray( a ) ? b : a,
+        haystack = Array.isArray( a ) ? a : b;
 
-        for (key in arr) {
-          if (arr[key] == arg) {
-            return true;
-          }
-        }
-
-        return false;
+        return haystack.indexOf( needle ) > -1;
       },
       /**
        *  $.clone( arg ) -> Array || Object, clone of [array] or Object, deep clone of [object]
        **/
-      clone:        function(arg) {
+      clone: function(arg) {
         if ( Pollen.evaluate.isArr(arg) ) {
           return [].concat(arg);
         }
@@ -331,19 +312,19 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.last( array ) -> Array Item, last item in [array]
        **/
-      last:         function(arr) {
+      last: function(arr) {
         return arr[arr.length - 1];
       },
       /**
        *  $.first( array ) -> Array Item, first item in [array]
        **/
-      first:         function(arr) {
+      first: function(arr) {
         return arr[0];
       },
       /**
        *  $.unique( arg ) -> Array || Object, removes duplicate values from [arg](array||object), returns uniques
        **/
-      unique:       function(arg) {
+      unique: function(arg) {
         var i = 0, ret  = [], cache = [];
 
         for ( var val in arg ) {
@@ -359,7 +340,7 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.merge( arr, * ) -> Array, Merges [*](array), removes duplicate values
        **/
-      merge:        function( arr ) {
+      merge: function( arr ) {
 
         var merged = arr, i = 0;
 
@@ -425,7 +406,7 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.map( array, function ) -> Array, apply [function] to each item in [array], return array of new values
        **/
-      map:          function( arr, fn ) {
+      map: function( arr, fn ) {
         var ret  = [],
             i   = 0, len = arr.length;
 
@@ -440,7 +421,7 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.grep( array, expression, function ) -> Object, values that match [expression] and/or [function]
        **/
-      grep:         function( arr, expr_fn, fn ) {
+      grep: function( arr, expr_fn, fn ) {
         var ret  = [], expr;
 
         if ( Pollen.evaluate.isFn(expr_fn) ) {
@@ -451,8 +432,8 @@ if ( !Array.prototype.forEach ) {
 
         Pollen.array.each(arr, function(i, val) {
 
-          if ( typeof val === 'number' ) {
-            val  = val + '';
+          if ( typeof val === "number" ) {
+            val  = val + "";
           }
 
           if ( val.match(expr) ) {
@@ -469,7 +450,7 @@ if ( !Array.prototype.forEach ) {
        *  $.size( array ) -> Int, size of arr
        **/
 
-      size:         function( arg ) {
+      size: function( arg ) {
         if ( Pollen.evaluate.isArr(arg) || Pollen.evaluate.isStr(arg) ) {
           return Pollen.array.toArray( arg ).length;
         }
@@ -505,15 +486,15 @@ if ( !Array.prototype.forEach ) {
         }).sort(function(left, right) {
           var a = left.criteria, b = right.criteria;
           return a < b ? -1 : a > b ? 1 : 0;
-        }).pick('value');
+        }).pick("value");
       },
 
 
-      compact:  function( arg ) {
+      compact: function( arg ) {
         var _filter   = [undefined,null,false],
             ret   = Pollen.evaluate.isArr(arg) ? [] : {},
             _compact  = function( value ) {
-              var len = value.length, key = '';
+              var len = value.length, key = "";
 
               for ( var i in value ) {
                 key = value [ i ];
@@ -543,7 +524,7 @@ if ( !Array.prototype.forEach ) {
     */
     object: {
       //  Object
-      keys:         function( obj ) {
+      keys: function( obj ) {
         var ret = [];
         for (var _prop in  obj ) {
           if (  obj[_prop] ) {
@@ -552,7 +533,7 @@ if ( !Array.prototype.forEach ) {
         }
         return ret;
       },
-      values:       function( obj ) {
+      values: function( obj ) {
         var ret = [];
         for (var _prop in  obj )   {
           if (  obj[_prop] ) {
@@ -564,7 +545,7 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.extend( object, _object ) -> Object, copy properties fron [_object] to [object]
        **/
-      extend:       function( obj , src) {
+      extend: function( obj , src) {
 
         if ( Pollen.evaluate.isNull(obj) && Pollen.evaluate.isDef(src) ) {
           return src;
@@ -576,7 +557,7 @@ if ( !Array.prototype.forEach ) {
                 objProp  =  obj[prop];
 
               if ( !Pollen.evaluate.isNull(srcProp) ) {
-                obj[prop]   = (objProp && typeof srcProp == 'object' && typeof objProp == 'object') ?
+                obj[prop]   = (objProp && typeof srcProp == "object" && typeof objProp == "object") ?
                                 Pollen.array.merge(objProp, srcProp) :
                                 srcProp;
               }
@@ -590,14 +571,14 @@ if ( !Array.prototype.forEach ) {
     */
     ajax: {
       _options: {
-        url:      '',
-        data:     '',
-        dataType: '',
+        url:      "",
+        data:     "",
+        dataType: "",
         success:  Pollen.noop, //$.fn,//
-        type:     'GET',
+        type:     "GET",
         //  TODO: FIX THIS.
-        sync:     navigator.userAgent.toLowerCase().indexOf('safari/') != -1 ? false : true,
-        xhr:      function()  {
+        sync:     navigator.userAgent.toLowerCase().indexOf("safari/") != -1 ? false : true,
+        xhr: function()  {
           return new XMLHttpRequest();
         }
       },
@@ -607,8 +588,8 @@ if ( !Array.prototype.forEach ) {
        *  --> request.data    ->  params
        *  --> request.success ->  success callback
        **/
-      get:      function(request) {
-        request.type = 'GET';
+      get: function(request) {
+        request.type = "GET";
         this._ajax(request);
       },
       /**
@@ -617,13 +598,13 @@ if ( !Array.prototype.forEach ) {
        *  --> request.data    ->  params
        *  --> request.success ->  success callback
        **/
-      post:     function(request) {
-        request.type = 'POST';
+      post: function(request) {
+        request.type = "POST";
         this._ajax(request);
       },
-      _ajax:     function(request) {
+      _ajax: function(request) {
         var options   = Pollen.object.extend( this._options, request ),
-            json      = options.dataType == 'json' ? true : false, // change to accept data-types not specifically json.
+            json      = options.dataType == "json" ? true : false, // change to accept data-types not specifically json.
             _type     = options.type.toLowerCase(),
             _xhr      = options.xhr(),
             ajaxSuccess = options.success;
@@ -634,25 +615,25 @@ if ( !Array.prototype.forEach ) {
           options.data = Pollen.data.param(options.data);
         }
 
-        if ( _type == 'get' && options.data.length ) {
-          options.url += (  (new RegExp(/\?/)).test(options.url) ? '&' : '?'  ) + options.data;
+        if ( _type == "get" && options.data.length ) {
+          options.url += (  (new RegExp(/\?/)).test(options.url) ? "&" : "?"  ) + options.data;
         }
 
         if (_xhr) {
           Pollen.ajax._confXHR(_xhr, options, json, ajaxSuccess);
           _xhr.open(options.type, options.url, options.sync);
-          _xhr.setRequestHeader('X-Requested-With', 'Worker-XMLHttpRequest');
-          _xhr.setRequestHeader('X-Worker-Hive', 'Pollen-JS' );
+          _xhr.setRequestHeader("X-Requested-With", "Worker-XMLHttpRequest");
+          _xhr.setRequestHeader("X-Worker-Hive", "Pollen-JS" );
 
           if ( Pollen.evaluate.isDef(Pollen.identity) ) {
-            _xhr.setRequestHeader('X-Pollen-Thread-Id', Pollen.identity );
+            _xhr.setRequestHeader("X-Pollen-Thread-Id", Pollen.identity );
           }
 
-          if ( _type == 'post' ) {
-            _xhr.setRequestHeader('Content-Type',    'application/x-www-form-urlencoded');
+          if ( _type == "post" ) {
+            _xhr.setRequestHeader("Content-Type",    "application/x-www-form-urlencoded");
           }
 
-          _xhr.send(  _type == 'post' ? options.data : null );
+          _xhr.send(  _type == "post" ? options.data : null );
         }
       },
       _confXHR: function(_cxhr, options, json, ajaxSuccess) {
@@ -709,10 +690,10 @@ if ( !Array.prototype.forEach ) {
 
         //  Enforce Thread Identity
         if ( arguments.length == 2 && arguments[1] === true ) {
-          add( 'WORKER_ID', Pollen.identity);
+          add( "WORKER_ID", Pollen.identity);
         }
 
-        return ret.join("&").replace(/%20/g, '+');
+        return ret.join("&").replace(/%20/g, "+");
       },
       /**
         basic storage, needs A LOT of work
@@ -779,7 +760,7 @@ if ( !Array.prototype.forEach ) {
                      if(!name){
                        // if we don't have a name we are just getting all the properties values (.* or [*])
                        ret[ ret.length ] = val;
-                     }else if(val && typeof val == 'object'){
+                     }else if(val && typeof val == "object"){
 
                        walk(val);
                      }
@@ -809,7 +790,7 @@ if ( !Array.prototype.forEach ) {
                  for( ; i<len; ++i ){
                    var value = arr[i];
                    if( fn(value, i, arr) ){
-                     if((typeof value == 'object') && value){
+                     if((typeof value == "object") && value){
                        // with objects we prevent duplicates with a marker property
                        if(!value.__included){
                          value.__included = true;
@@ -833,7 +814,7 @@ if ( !Array.prototype.forEach ) {
 
                return function(query,obj){
 
-                   var depth = 0,strs = [], prefix = '', executor = '';
+                   var depth = 0,strs = [], prefix = "", executor = "";
 
                    function pcall(name){
                      // creates a function call and puts the current expression in a parameter for a call
@@ -841,28 +822,28 @@ if ( !Array.prototype.forEach ) {
                    }
                    function makeRegex(t,a,b,c,d){
                      // creates a regular expression matcher for when wildcards and ignore case is used
-                     return strs[d].match(/[\*\?]/) || c == '~' ?
-                         "/^" + strs[d].substring(1,strs[d].length-1).replace(/\\([btnfr\\"'])|([^\w\*\?])/g,"\\$1$2").replace(/([\*\?])/g,".$1") + (c == '~' ? '$/i' : '$/') + ".test(" + a + ")" :
+                     return strs[d].match(/[\*\?]/) || c == "~" ?
+                         "/^" + strs[d].substring(1,strs[d].length-1).replace(/\\([btnfr\\"'])|([^\w\*\?])/g,"\\$1$2").replace(/([\*\?])/g,".$1") + (c == "~" ? "$/i" : "$/") + ".test(" + a + ")" :
                          t;
                    }
 
                    query = query.replace(/"(\\.|[^"\\])*"|'(\\.|[^'\\])*'|[\[\]]/g,function(t){
-                     depth += t == '[' ? 1 : t == ']' ? -1 : 0; // keep track of bracket depth
-                     return (t == ']' && depth > 0) ? '`]' : // we mark all the inner brackets as skippable
+                     depth += t == "[" ? 1 : t == "]" ? -1 : 0; // keep track of bracket depth
+                     return (t == "]" && depth > 0) ? "`]" : // we mark all the inner brackets as skippable
                          (t.charAt(0) == '"' || t.charAt(0) == "'") ? "`" + (strs.push(t) - 1) :// and replace all the strings
                            t;
                      })
                      // change the equals to comparisons
                      .replace(/([^<>=]=)([^=])/g,"$1=$2")
                      .replace(/@|(\.\s*)?[a-zA-Z\$_]+(\s*:)?/g,function(t){
-                       return t.charAt(0) == '.' ? t : // leave .prop alone
-                         t == '@' ? "$obj" :// the reference to the current object
+                       return t.charAt(0) == "." ? t : // leave .prop alone
+                         t == "@" ? "$obj" :// the reference to the current object
                          (t.match(/:|^(\$|Math|true|false|null)$/) ? "" : "$obj.") + t; // plain names should be properties of root... unless they are a label in object initializer
                      })
                      .replace(/\.?\.?\[(`\]|[^\]])*\]|\?.*|\.\.([\w\$_]+)|\.\*/g,function(t,a,b){
                        var oper = t.match(/^\.?\.?(\[\s*\^?\?|\^?\?|\[\s*==)(.*?)\]?$/); // [?expr] and ?expr and [=expr and =expr
                        if(oper){
-                         var prefix = '';
+                         var prefix = "";
                          if(t.match(/^\./)){
                            // recursive object search
                            pcall("expand");
@@ -887,7 +868,7 @@ if ( !Array.prototype.forEach ) {
                        }
                        if(t.match(/^\.\.|\.\*|\[\s*\*\s*\]|,/)){ // ..prop and [*]
                          pcall("expand");
-                         return (t.charAt(1) == '.' ?
+                         return (t.charAt(1) == "." ?
                              ",'" + b + "'" : // ..prop
                                t.match(/,/) ?
                                  "," + t : // [prop1,prop2]
@@ -901,9 +882,9 @@ if ( !Array.prototype.forEach ) {
                        return makeRegex(t,c,d,b,a);
                      });
 
-                   query = prefix + (query.charAt(0) == '$' ? "" : "$") + query.replace(/`([0-9]+|\])/g,function(t,a){
+                   query = prefix + (query.charAt(0) == "$" ? "" : "$") + query.replace(/`([0-9]+|\])/g,function(t,a){
                      //restore the strings
-                     return a == ']' ? ']' : strs[a];
+                     return a == "]" ? "]" : strs[a];
                    });
                    // create a function within this scope (so it can use expand and slice)
 
@@ -932,7 +913,7 @@ if ( !Array.prototype.forEach ) {
        *  $.send( message ) -> Wraps and normalizes postMessage() across supporting clients, sends [message](object||string||array) to client
        *  --> if [message] is an object, and message.SEND_TO & message.SEND_FROM is defined, the message will be sent directly to the worker defined by SEND_TO
        **/
-      send:   function( message ) {
+      send: function( message ) {
 
         var _msg  = message, _msgStr;
 
@@ -957,7 +938,7 @@ if ( !Array.prototype.forEach ) {
 
       },
       //  DEPRECATE
-      reply:   function(message) {
+      reply: function(message) {
         //  Thread specific postMessage wrapper
         return Pollen.worker.send(message);
         //  the 'explicit' arg is no longer checked
@@ -969,13 +950,13 @@ if ( !Array.prototype.forEach ) {
        *  --> 'this' is WorkerGlobalScope
        *  --> can be shortened to $(function(message) { } );
        **/
-      receive:   function(fn) {
+      receive: function(fn) {
         //  Worker receives message, behaviour is similar to $().ready()
-        return  addEventListener('message', function(event) {
+        return  addEventListener("message", function(event) {
 
           var message = event.data;
 
-          if ( Pollen.identity == '' ) {
+          if ( Pollen.identity == "" ) {
             Pollen.identity = message.WORKER_ID;
           }
 
@@ -992,11 +973,11 @@ if ( !Array.prototype.forEach ) {
       /**
        *  $.encode( arg ) -> JSON Object, turns [arg] into JSON (Convenience shorthand)
        **/
-      encode:     JSON.parse,
+      encode: JSON.parse,
       /**
        *  $.decode( arg ) -> JSON as String, turns JSON [arg] into a str  (Convenience shorthand)
        **/
-      decode:     JSON.stringify
+      decode: JSON.stringify
     }
   };
 
@@ -1017,14 +998,13 @@ if ( !Array.prototype.forEach ) {
   p.ajax = $.ajax  = Pollen.ajax;
 
   //  Sub Module Objects to attach to Pollen/$ root
-  ('identify date string evaluate reflection array func object data json worker')
-    .split(' ')
+  ("identify date string evaluate reflection array func object data json worker")
+    .split(" ")
       .forEach(function(obj) {
-        //  Copy specific module methods back to $ for concise and convenient syntax
+        // Copy specific module methods back to $ for concise and convenient syntax
         for ( var prop in Pollen[obj] ) {
           p[prop] = $[prop] = Pollen[obj][prop];
         }
       });
 
-})(this);
-
+})( this );

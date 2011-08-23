@@ -464,6 +464,23 @@ function enumeratedEquals(iterable, expected, message)  {
     equals( $.inArray(array, 'bazzy'), false, "$.inArray(array, 'bazzy') ");
 
   });
+
+  test("$.inArray( needle, array )", function () {
+    expect(6);
+
+
+    var array  = ['foo', 'bar', 'baz'];
+
+
+    equals( $.inArray('foo', array), true, "$.inArray('foo', array) ");
+    equals( $.inArray('bar', array), true, "$.inArray('bar', array) ");
+    equals( $.inArray('baz', array), true, "$.inArray('baz', array) ");
+
+    equals( $.inArray('fooey', array), false, "$.inArray('fooey', array) ");
+    equals( $.inArray('barry', array), false, "$.inArray('barry', array) ");
+    equals( $.inArray('bazzy', array), false, "$.inArray('bazzy', array) ");
+
+  });
   test("$.clone( array )", function () {
     expect(3)
     var array  = ['foo', 'bar', 'baz'];
