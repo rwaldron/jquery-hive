@@ -571,13 +571,13 @@
     */
     ajax: {
       _options: {
-        url:      "",
-        data:     "",
+        url: "",
+        data: "",
         dataType: "",
-        success:  Pollen.noop, //$.fn,//
-        type:     "GET",
+        success: Pollen.noop, //$.fn,//
+        type: "GET",
         //  TODO: FIX THIS.
-        sync:     navigator.userAgent.toLowerCase().indexOf("safari/") != -1 ? false : true,
+        async: true,
         xhr: function()  {
           return new XMLHttpRequest();
         }
@@ -621,7 +621,7 @@
 
         if (_xhr) {
           Pollen.ajax._confXHR(_xhr, options, json, ajaxSuccess);
-          _xhr.open(options.type, options.url, options.sync);
+          _xhr.open(options.type, options.url, options.async);
           _xhr.setRequestHeader("X-Requested-With", "Worker-XMLHttpRequest");
           _xhr.setRequestHeader("X-Worker-Hive", "Pollen-JS" );
 
