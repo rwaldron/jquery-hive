@@ -671,7 +671,7 @@
        *  $.param( arg ) -> String, Derived and Adapted from, similar in behavior to jQuery.param()
        **/
       param: function( arg ) {
-        //  Adapted from jQuery.param()
+        // referance: http://stackoverflow.com/a/1714899/2287068
         serialize = function(obj, prefix) {
           var str = [];
           for(var p in obj) {
@@ -686,7 +686,7 @@
         }
 
         query_string = serialize(arg);
-        
+
         //  Enforce Thread Identity
         if ( arguments.length == 2 && arguments[1] === true ) {
           query_string += '&WORKER_ID=' + Pollen.identity;

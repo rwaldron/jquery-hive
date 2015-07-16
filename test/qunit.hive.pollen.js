@@ -30,8 +30,6 @@ function enumeratedEquals(iterable, expected, message)  {
 }
 
 
-
-
   /*--------------------------------------------------------*/
   module("$.func.*");
   test("$.noop()", function () {
@@ -570,7 +568,6 @@ function enumeratedEquals(iterable, expected, message)  {
 
   });
 
-
   test("$.filter( arg , function, iteration )", function () {
 
     var _object_a = {
@@ -838,7 +835,6 @@ function enumeratedEquals(iterable, expected, message)  {
 
     var _object_d = { a: { b: 1, c: 2 }, d: [ 'string', 4, { e: 'test string' } ] };
     equals( $.param( _object_d ), "a%5Bb%5D=1&a%5Bc%5D=2&d%5B0%5D=string&d%5B1%5D=4&d%5B2%5D%5Be%5D=test%20string", 'arg contains array and object' );
-
 
   });
 
