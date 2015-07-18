@@ -572,6 +572,7 @@
     ajax: {
       _options: {
         url: "",
+        headers: "",
         data: "",
         dataType: "",
         success: Pollen.noop, //$.fn,//
@@ -595,6 +596,7 @@
       /**
        *  $.ajax.post( request ) -> Implemented. Documention incomplete.
        *  --> request.url     ->  url to open
+       *  --> request.headers ->  hash
        *  --> request.data    ->  params
        *  --> request.success ->  success callback
        **/
@@ -631,15 +633,15 @@
             _xhr.setRequestHeader("Content-Type",    "application/x-www-form-urlencoded");
           }
 
+          Pollen.ajax._setHeader(_xhr, options.headers);
+
           _xhr.send(  _type == "post" ? options.data : null );
         }
       },
       _confXHR: function(_cxhr, options, json, ajaxSuccess) {
-
         var data, _xjson;
 
         var onreadystatechange = _cxhr.onreadystatechange = function() {
-
           if (_cxhr.readyState == 4) {
 
             _xjson  = Pollen.evaluate.isJson(_cxhr.responseText) ? JSON.parse(_cxhr.responseText) : null;
@@ -653,6 +655,10 @@
           }
         };
 
+        _cxhr.onerror= function(e) {
+          console.log(e);
+        };
+
         //  scopify the success callback
         function success() {
           if ( ajaxSuccess ) {
@@ -660,6 +666,12 @@
           }
         }
 
+        return _cxhr;
+      },
+      _setHeader: function(_cxhr, headers) {
+        for (var key in headers) { 
+          _cxhr.setRequestHeader(key, headers[key]);
+        }
         return _cxhr;
       }
     },
