@@ -572,6 +572,7 @@
     ajax: {
       _options: {
         url: "",
+        headers: "",
         data: "",
         dataType: "",
         success: Pollen.noop, //$.fn,//
@@ -595,6 +596,7 @@
       /**
        *  $.ajax.post( request ) -> Implemented. Documention incomplete.
        *  --> request.url     ->  url to open
+       *  --> request.headers ->  hash
        *  --> request.data    ->  params
        *  --> request.success ->  success callback
        **/
@@ -608,8 +610,6 @@
             _type     = options.type.toLowerCase(),
             _xhr      = options.xhr(),
             ajaxSuccess = options.success;
-
-
 
         if ( !Pollen.evaluate.isStr(options.data)  ) {
           options.data = Pollen.data.param(options.data);
@@ -633,15 +633,15 @@
             _xhr.setRequestHeader("Content-Type",    "application/x-www-form-urlencoded");
           }
 
+          Pollen.ajax._setHeader(_xhr, options.headers);
+
           _xhr.send(  _type == "post" ? options.data : null );
         }
       },
       _confXHR: function(_cxhr, options, json, ajaxSuccess) {
-
         var data, _xjson;
 
         var onreadystatechange = _cxhr.onreadystatechange = function() {
-
           if (_cxhr.readyState == 4) {
 
             _xjson  = Pollen.evaluate.isJson(_cxhr.responseText) ? JSON.parse(_cxhr.responseText) : null;
@@ -655,6 +655,10 @@
           }
         };
 
+        _cxhr.onerror= function(e) {
+          console.log(e);
+        };
+
         //  scopify the success callback
         function success() {
           if ( ajaxSuccess ) {
@@ -662,6 +666,12 @@
           }
         }
 
+        return _cxhr;
+      },
+      _setHeader: function(_cxhr, headers) {
+        for (var key in headers) { 
+          _cxhr.setRequestHeader(key, headers[key]);
+        }
         return _cxhr;
       }
     },
@@ -673,27 +683,28 @@
        *  $.param( arg ) -> String, Derived and Adapted from, similar in behavior to jQuery.param()
        **/
       param: function( arg ) {
-        //  Adapted from jQuery.param()
-        var ret = [];
-
-        function add( key, value ) {
-          // If value is a function, invoke it and return its value
-          value = Pollen.evaluate.isFn(value) ? value() : value;
-          ret[ ret.length ] = encodeURIComponent(key) + "=" + encodeURIComponent(value);
+        // referance: http://stackoverflow.com/a/1714899/2287068
+        serialize = function(obj, prefix) {
+          var str = [];
+          for(var p in obj) {
+            if (obj.hasOwnProperty(p)) {
+              var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+              str.push(typeof v == "object" ?
+                serialize(v, k) :
+                encodeURIComponent(k) + "=" + encodeURIComponent(v));
+            }
+          }
+          return str.join("&");
         }
 
-
-        //  TO DO: THIS each() call needs to be updated
-        Pollen.array.each( arg, function( key, value ) {
-          add( key, value );
-        });
+        query_string = serialize(arg);
 
         //  Enforce Thread Identity
         if ( arguments.length == 2 && arguments[1] === true ) {
-          add( "WORKER_ID", Pollen.identity);
+          query_string += '&WORKER_ID=' + Pollen.identity;
         }
 
-        return ret.join("&").replace(/%20/g, "+");
+        return query_string;
       },
       /**
         basic storage, needs A LOT of work

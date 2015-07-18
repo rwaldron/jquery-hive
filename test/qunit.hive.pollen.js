@@ -30,8 +30,6 @@ function enumeratedEquals(iterable, expected, message)  {
 }
 
 
-
-
   /*--------------------------------------------------------*/
   module("$.func.*");
   test("$.noop()", function () {
@@ -736,53 +734,50 @@ function enumeratedEquals(iterable, expected, message)  {
 
 
   module("$.ajax.*");
-  //test("$.ajax.get( request )", function () {
-  //});
+  test("$.ajax.get( request )", function () {
 
-  var _ajax_sent_a  = { "arg1" : "SN", "arg2" : "AFU" },
-      _ajax_sent_b  = { "arg1" : "FU", "arg2" : "BAR" },
-      _ajax_sent_c, _ajax_sent_d, _ajax_sent_e, _ajax_sent_f;
-
-
-  var _ajax_data_a,_ajax_data_b,_ajax_data_c, _ajax_data_d, _ajax_data_e, _ajax_data_f;
+    var _ajax_sent_a  = { "arg1" : "SN", "arg2" : "AFU" },
+        _ajax_sent_b  = { "arg1" : "FU", "arg2" : "BAR" },
+        _ajax_sent_c, _ajax_sent_d, _ajax_sent_e, _ajax_sent_f;
 
 
-  $.ajax.get({
-    url: 'xhr_echo_request_json.php',
-    data: $.param( _ajax_sent_a ),
-    success: function(data) {
+    var _ajax_data_a,_ajax_data_b,_ajax_data_c, _ajax_data_d, _ajax_data_e, _ajax_data_f;
 
-      _ajax_data_a  = data.text;
-      //equals( JSON.stringify(_ajax_sent_a), data.text, "JSON.stringify(_ajax_sent_a), data.text returns exactly the object sent" );
-    }
+
+    $.ajax.get({
+      url: 'xhr_echo_request_json.php',
+      data: $.param( _ajax_sent_a ),
+      success: function(data) {
+
+        _ajax_data_a  = data.text;
+        //equals( JSON.stringify(_ajax_sent_a), data.text, "JSON.stringify(_ajax_sent_a), data.text returns exactly the object sent" );
+      }
+    });
+
+
+
+    $.ajax.get({
+      url: 'xhr_echo_request_json.php',
+      dataType: 'json',
+      data: $.param( _ajax_sent_b ),
+      success: function(data) {
+    //     //same( _ajax_sent_b, data, "dataType: 'json' returns exactly the object sent" );
+        _ajax_data_b  = data;
+      }
+    });
+
+
+
+    asyncTest("$.ajax.get( request )", function() {
+      setTimeout(function(){
+
+        equals( _ajax_data_a, JSON.stringify(_ajax_sent_a), "JSON.stringify(_ajax_sent_a) ["+JSON.stringify(_ajax_sent_a)+"], data.text returns exactly the object sent" );
+        same( _ajax_data_b, _ajax_sent_b , "dataType: 'json' returns exactly the object sent" );
+
+        start();
+      }, 30);
+    });
   });
-
-
-
-  $.ajax.get({
-    url: 'xhr_echo_request_json.php',
-    dataType: 'json',
-    data: $.param( _ajax_sent_b ),
-    success: function(data) {
-      //same( _ajax_sent_b, data, "dataType: 'json' returns exactly the object sent" );
-
-      _ajax_data_b  = data;
-    }
-  });
-
-
-
-  asyncTest("$.ajax.get( request )", function() {
-    setTimeout(function(){
-
-      equals( _ajax_data_a, JSON.stringify(_ajax_sent_a), "JSON.stringify(_ajax_sent_a) ["+JSON.stringify(_ajax_sent_a)+"], data.text returns exactly the object sent" );
-      same( _ajax_data_b, _ajax_sent_b , "dataType: 'json' returns exactly the object sent" );
-
-      start();
-    }, 30);
-  });
-
-
 
 
   test("$.ajax.post( request )", function () {
@@ -838,13 +833,8 @@ function enumeratedEquals(iterable, expected, message)  {
 
     equals( $.param( _object_a, true ), 'a=5&b=7&c=foo&d=bar&WORKER_ID=0', 'Object to params, added WORKER_ID' );
 
-    var params = {foo:"bar", baz:42, quux:"All your base are belong to us"};
-    equals( $.param(params), "foo=bar&baz=42&quux=All+your+base+are+belong+to+us", "simple" );
-
-    ///params = {someName: [1, 2, 3], regularThing: "blah" };
-    ///equals( $.param(params), "someName%5B%5D=1&someName%5B%5D=2&someName%5B%5D=3&regularThing=blah", "with array" );
-
-
+    var _object_d = { a: { b: 1, c: 2 }, d: [ 'string', 4, { e: 'test string' } ] };
+    equals( $.param( _object_d ), "a%5Bb%5D=1&a%5Bc%5D=2&d%5B0%5D=string&d%5B1%5D=4&d%5B2%5D%5Be%5D=test%20string", 'arg contains array and object' );
 
   });
 
